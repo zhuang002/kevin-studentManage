@@ -7,6 +7,7 @@ package studentmanagementfront;
 
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
+import studentmanagementbackend.*;
 
 /**
  *
@@ -65,8 +66,9 @@ public class StudentListJPanel extends javax.swing.JPanel {
 
     private ArrayList<Student> students=new ArrayList();
     private void loadStudents() {
-        this.students=Database.loadStudents();
-        DefaultListModel listModel=new DefaultListModel(this.students);
+        this.students=Database.getAllStudents();
+        DefaultListModel listModel=new DefaultListModel();
+        listModel.addAll(this.students);
         this.jListStudents.setModel(listModel);
     }
 
