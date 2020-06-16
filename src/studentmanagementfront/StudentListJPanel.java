@@ -5,8 +5,6 @@
  */
 package studentmanagementfront;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.DefaultListModel;
@@ -16,7 +14,7 @@ import studentmanagementbackend.*;
  *
  * @author zhuan
  */
-public class StudentListJPanel extends javax.swing.JPanel {
+public class StudentListJPanel extends ContentJPanel {
 
     /**
      * Creates new form StudentListJPanel
@@ -25,9 +23,9 @@ public class StudentListJPanel extends javax.swing.JPanel {
         initComponents();
         
         try {
-            this.studentJPanel1.setParentPanel(this);
+            this.studentJPanel1.setParentPanel((ContentJPanel)this);
             loadStudents();
-            setInitialState();
+            setState(PanelState.Initial);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -97,33 +95,42 @@ public class StudentListJPanel extends javax.swing.JPanel {
         this.jListStudents.setModel(listModel);
     }
 
-    private void setInitialState() {
-        this.studentJPanel1.setState(PanelState.Initial);
+    @Override
+    public void setState(PanelState state) {
+        this.studentJPanel1.setState(state);
     }
 
     public void actionCompleted(Action action, Student student)  {
-        if (action==Action.New || action==Action.Update) {
-            loadStudents();
-            int idx=((DefaultListModel)this.jListStudents.getModel()).indexOf(student);
-            //int idx=Collections.binarySearch(students, student, (x,y)->x.getId().compareTo(y.getId()));
-            this.jListStudents.setSelectedIndex(idx);
-            onStudentSelected();
-        } else if (action==Action.Cancel) {
-            int idx=this.jListStudents.getSelectedIndex();
-            if (idx>=0)
-                onStudentSelected();
-            else {
-                this.studentJPanel1.setState(PanelState.Initial);
-            }
-        } else if (action==Action.Delete) {
-            int idx=this.jListStudents.getSelectedIndex();
-            if (idx>=0) {
-                Student stud=(Student)((DefaultListModel)this.jListStudents.getModel()).get(idx);
-                stud.delete();
+        if (null != action) switch (action) {
+            case New:
+            case Update:{
                 loadStudents();
-                this.studentJPanel1.clearAll();
-                this.studentJPanel1.setState(PanelState.Initial);
-            }
+                int idx=((DefaultListModel)this.jListStudents.getModel()).indexOf(student);
+                //int idx=Collections.binarySearch(students, student, (x,y)->x.getId().compareTo(y.getId()));
+                this.jListStudents.setSelectedIndex(idx);
+                onStudentSelected();
+                    break;
+                }
+            case Cancel:{
+                int idx=this.jListStudents.getSelectedIndex();
+                if (idx>=0)
+                    onStudentSelected();
+                else {
+                    this.studentJPanel1.setState(PanelState.Initial);
+                }       break;
+                }
+            case Delete:{
+                int idx=this.jListStudents.getSelectedIndex();
+                if (idx>=0) {
+                    Student stud=(Student)((DefaultListModel)this.jListStudents.getModel()).get(idx);
+                    stud.delete();
+                    loadStudents();
+                    this.studentJPanel1.clearAll();
+                    this.studentJPanel1.setState(PanelState.Initial);
+                }       break;
+                }
+            default:
+                break;
         }
     }
 

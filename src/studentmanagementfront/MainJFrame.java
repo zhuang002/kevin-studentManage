@@ -32,8 +32,9 @@ public class MainJFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         studentListJPanel1 = new studentmanagementfront.StudentListJPanel();
-        couseListJPanel1 = new studentmanagementfront.CouseListJPanel();
+        couseListJPanel1 = new studentmanagementfront.CourseListJPanel();
         examListJPanel1 = new studentmanagementfront.ExamListJPanel();
+        examReportListJPanel1 = new studentmanagementfront.ExamReportListJPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuStudent = new javax.swing.JMenu();
         jMenuItemManageStudents = new javax.swing.JMenuItem();
@@ -42,6 +43,8 @@ public class MainJFrame extends javax.swing.JFrame {
         jMenuExam = new javax.swing.JMenu();
         jMenuItemManageExams = new javax.swing.JMenuItem();
         jMenuReport = new javax.swing.JMenu();
+        jMenuItemMarking = new javax.swing.JMenuItem();
+        jMenuItemReport = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -57,6 +60,7 @@ public class MainJFrame extends javax.swing.JFrame {
 
         examListJPanel1.setName("Exam"); // NOI18N
         getContentPane().add(examListJPanel1, "Exam");
+        getContentPane().add(examReportListJPanel1, "ExamReport");
 
         jMenuStudent.setText("Student");
 
@@ -95,6 +99,18 @@ public class MainJFrame extends javax.swing.JFrame {
         jMenuBar1.add(jMenuExam);
 
         jMenuReport.setText("Report");
+
+        jMenuItemMarking.setText("Marking Exam Paper");
+        jMenuItemMarking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemMarkingActionPerformed(evt);
+            }
+        });
+        jMenuReport.add(jMenuItemMarking);
+
+        jMenuItemReport.setText("StudentReport");
+        jMenuReport.add(jMenuItemReport);
+
         jMenuBar1.add(jMenuReport);
 
         setJMenuBar(jMenuBar1);
@@ -129,6 +145,12 @@ public class MainJFrame extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_formWindowClosing
+
+    private void jMenuItemMarkingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMarkingActionPerformed
+        // TODO add your handling code here:
+        Container contentPane=this.getContentPane();
+        ((CardLayout)contentPane.getLayout()).show(contentPane, "ExamReport");
+    }//GEN-LAST:event_jMenuItemMarkingActionPerformed
 
     /**
      * @param args the command line arguments
@@ -166,14 +188,17 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private studentmanagementfront.CouseListJPanel couseListJPanel1;
+    private studentmanagementfront.CourseListJPanel couseListJPanel1;
     private studentmanagementfront.ExamListJPanel examListJPanel1;
+    private studentmanagementfront.ExamReportListJPanel examReportListJPanel1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuCourse;
     private javax.swing.JMenu jMenuExam;
     private javax.swing.JMenuItem jMenuItemManageCourses;
     private javax.swing.JMenuItem jMenuItemManageExams;
     private javax.swing.JMenuItem jMenuItemManageStudents;
+    private javax.swing.JMenuItem jMenuItemMarking;
+    private javax.swing.JMenuItem jMenuItemReport;
     private javax.swing.JMenu jMenuReport;
     private javax.swing.JMenu jMenuStudent;
     private studentmanagementfront.StudentListJPanel studentListJPanel1;

@@ -15,7 +15,7 @@ import studentmanagementbackend.Contact;
  *
  * @author zhuan
  */
-public class ContactJPanel extends javax.swing.JPanel {
+public class ContactJPanel extends ContentJPanel {
 
     /**
      * Creates new form ContactJPanel
@@ -96,6 +96,7 @@ public class ContactJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldHomePhone;
     // End of variables declaration//GEN-END:variables
 
+    
     public Contact retrieveData() {
         Contact contact=new Contact();
         contact.setCellphone(this.jTextFieldCellphone.getText());
@@ -104,37 +105,10 @@ public class ContactJPanel extends javax.swing.JPanel {
         return contact;
     }
 
-    void setData(Contact contact) {
+
+    public void setData(Contact contact) {
         this.jTextFieldCellphone.setText(contact.getCellphone());
         this.jTextFieldHomePhone.setText(contact.getHomephone());
         this.jTextFieldEmail.setText(contact.getEmail());
-    }
-
-    void enableAllControls(boolean enable) {
-        for (Component comp : this.getComponents()) {
-            if (!(comp instanceof JLabel)) {
-                comp.setEnabled(enable);
-            }            
-        }
-    }
-
-    void enableAllInputControls(boolean enable) {
-        for (Component comp: this.getComponents()) {
-            if (comp instanceof JTextComponent) {
-                ((JTextComponent) comp).setEnabled(enable);
-            } else if (comp instanceof JComboBox) {
-                ((JComboBox) comp).setEnabled(enable);
-            }
-        }
-    }
-
-    void clearAll() {
-        for (Component comp : this.getComponents()) {
-            if (comp instanceof JTextComponent) {
-                ((JTextComponent) comp).setText("");
-            } else if (comp instanceof JComboBox) {
-                ((JComboBox) comp).setSelectedIndex(0);
-            }
-        }
     }
 }

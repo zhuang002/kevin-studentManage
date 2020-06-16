@@ -5,11 +5,13 @@
  */
 package studentmanagementfront;
 
+import studentmanagementbackend.Course;
+
 /**
  *
  * @author zhuan
  */
-public class CourseJPanel extends javax.swing.JPanel {
+public class CourseJPanel extends ContentJPanel {
 
     /**
      * Creates new form CourseJPanel
@@ -57,15 +59,40 @@ public class CourseJPanel extends javax.swing.JPanel {
         jComboBoxCredit.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "0.5", "1" }));
 
         jButtonSave.setText("Save");
+        jButtonSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSaveActionPerformed(evt);
+            }
+        });
 
         jButtonCancel.setText("Cancel");
+        jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCancelActionPerformed(evt);
+            }
+        });
 
         jButtonNew.setText("New");
         jButtonNew.setToolTipText("");
+        jButtonNew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNewActionPerformed(evt);
+            }
+        });
 
         jButtonDelete.setText("Delete");
+        jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDeleteActionPerformed(evt);
+            }
+        });
 
         jButtonUpdate.setText("Update");
+        jButtonUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUpdateActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -100,7 +127,7 @@ public class CourseJPanel extends javax.swing.JPanel {
                                 .addComponent(jButtonDelete)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonUpdate)))
-                        .addGap(0, 145, Short.MAX_VALUE)))
+                        .addGap(0, 147, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -121,19 +148,47 @@ public class CourseJPanel extends javax.swing.JPanel {
                     .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jComboBoxCredit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBoxCredit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSave)
                     .addComponent(jButtonCancel))
-                .addContainerGap())
+                .addContainerGap(21, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
+        // TODO add your handling code here:
+        Course course=this.retrieveData();
+        course.save();
+        ((CourseListJPanel)this.parentPanel).actionCompleted(Action.New,course);
+    }//GEN-LAST:event_jButtonSaveActionPerformed
+
+    private void jButtonNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNewActionPerformed
+        // TODO add your handling code here:
+        this.setState(PanelState.InNew);
+    }//GEN-LAST:event_jButtonNewActionPerformed
+
+    private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
+        // TODO add your handling code here:
+        this.setState(PanelState.InUpdate);
+        
+    }//GEN-LAST:event_jButtonUpdateActionPerformed
+
+    private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
+        // TODO add your handling code here:
+        ((CourseListJPanel)this.parentPanel).actionCompleted(Action.Cancel,null);
+    }//GEN-LAST:event_jButtonCancelActionPerformed
+
+    private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
+        // TODO add your handling code here:
+        ((CourseListJPanel)this.parentPanel).actionCompleted(Action.Delete,null);
+    }//GEN-LAST:event_jButtonDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -152,4 +207,60 @@ public class CourseJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldId;
     private javax.swing.JTextField jTextFieldName;
     // End of variables declaration//GEN-END:variables
+    private CourseListJPanel parent;
+    
+    @Override
+    public void setState(PanelState state) {
+        super.setState(state);
+        if (null!=state) switch (state) {
+            case InView:
+                this.jTextAreaDescription.setEnabled(false);
+                this.jButtonNew.setEnabled(true);
+                this.jButtonDelete.setEnabled(true);
+                this.jButtonUpdate.setEnabled(true);
+                break;
+            case Initial:
+                this.clearAll();
+                this.jTextAreaDescription.setEnabled(false);
+                this.jButtonNew.setEnabled(true);
+                break;
+            case InNew:
+                this.jTextAreaDescription.setEnabled(true);
+                this.jButtonSave.setEnabled(true);
+                this.jButtonCancel.setEnabled(true);
+                break;
+            case InUpdate:
+                this.jTextAreaDescription.setEnabled(true);
+                this.jButtonSave.setEnabled(true);
+                this.jButtonCancel.setEnabled(true);
+                this.jTextFieldId.setEnabled(false);
+                break;
+            default:
+                break;
+        }
+    }
+    
+    @Override
+    public void clearAll() {
+        super.clearAll();
+        this.jTextAreaDescription.setText("");
+    }
+
+    public Course retrieveData() {
+        Course course=new Course();
+        course.setId(this.jTextFieldId.getText());
+        course.setDescription(this.jTextAreaDescription.getText());
+        if (this.jComboBoxCredit.getSelectedIndex()==0)
+            course.setCredit(0.5);
+        else course.setCredit(1);
+        course.setName(this.jTextFieldName.getText());
+        return course;
+    }
+    
+    public void setData(Course course){
+        this.jTextFieldId.setText(course.getId());
+        this.jTextFieldName.setText(course.getName());
+        this.jTextAreaDescription.setText(course.getDescription());
+        this.jComboBoxCredit.setSelectedIndex((course.getCredit()==0.5)?0:1);
+    }
 }

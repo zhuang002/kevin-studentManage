@@ -5,17 +5,26 @@
  */
 package studentmanagementfront;
 
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+import studentmanagementbackend.Database;
+import studentmanagementbackend.Exam;
+
 /**
  *
  * @author zhuan
  */
-public class ExamListJPanel extends javax.swing.JPanel {
+public class ExamListJPanel extends ContentJPanel {
 
     /**
      * Creates new form ExamListJPanel
      */
     public ExamListJPanel() {
         initComponents();
+        this.examJPanel1.setState(PanelState.Initial);
+        this.examJPanel1.setParentPanel(this);
+        loadExams();
+        
     }
 
     /**
@@ -32,6 +41,11 @@ public class ExamListJPanel extends javax.swing.JPanel {
         jListExam = new javax.swing.JList<>();
         examJPanel1 = new studentmanagementfront.ExamJPanel();
 
+        jListExam.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jListExamMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jListExam);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
@@ -49,6 +63,11 @@ public class ExamListJPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jListExamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListExamMouseClicked
+        // TODO add your handling code here:
+        onSelected();
+    }//GEN-LAST:event_jListExamMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private studentmanagementfront.ExamJPanel examJPanel1;
@@ -56,4 +75,42 @@ public class ExamListJPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables
+
+    private void loadExams() {
+        ArrayList<Exam> exams=Database.getAllExams();
+        DefaultListModel model=new DefaultListModel();
+        model.addAll(exams);
+        this.jListExam.setModel(model);
+    }
+
+    void actionCompleted(Action action, Exam exam) {
+        if (action==Action.Save) {
+            this.loadExams();
+            int idx=((DefaultListModel)this.jListExam.getModel()).indexOf(exam);
+            this.jListExam.setSelectedIndex(idx);
+            this.onSelected();
+        } else if (action==Action.Cancel) {
+            onSelected();
+        } else if (action==Action.Delete) {
+            int idx=this.jListExam.getSelectedIndex();
+            if (idx<0) return;
+            DefaultListModel model=(DefaultListModel)this.jListExam.getModel();
+            Exam ex=(Exam)model.get(idx);
+            ex.delete();
+            loadExams();
+            this.examJPanel1.setState(PanelState.Initial);
+        } 
+    }
+
+    private void onSelected() {
+        int idx=this.jListExam.getSelectedIndex();
+        if (idx<0) {
+            this.examJPanel1.setState(PanelState.Initial);
+            this.examJPanel1.clearAll();
+            return;
+        }
+        Exam exam=(Exam)((DefaultListModel)this.jListExam.getModel()).get(idx);
+        this.examJPanel1.setData(exam);
+        this.examJPanel1.setState(PanelState.InView);
+    }
 }

@@ -18,7 +18,7 @@ import studentmanagementbackend.Student;
  *
  * @author zhuan
  */
-public class StudentJPanel extends javax.swing.JPanel {
+public class StudentJPanel extends ContentJPanel {
 
     /**
      * Creates new form StudentJPanel
@@ -193,7 +193,7 @@ public class StudentJPanel extends javax.swing.JPanel {
         Student student=retrieveData();
         student.save();
 
-        this.parentPanel.actionCompleted(Action.New,student);
+        ((StudentListJPanel)this.parentPanel).actionCompleted(Action.New,student);
 
     }//GEN-LAST:event_jButtonSaveActionPerformed
 
@@ -204,12 +204,12 @@ public class StudentJPanel extends javax.swing.JPanel {
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
         // TODO add your handling code here:
-        this.parentPanel.actionCompleted(Action.Cancel,null);
+        ((StudentListJPanel)this.parentPanel).actionCompleted(Action.Cancel,null);
     }//GEN-LAST:event_jButtonCancelActionPerformed
 
     private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
         // TODO add your handling code here:
-        this.parentPanel.actionCompleted(Action.Delete, null);
+        ((StudentListJPanel)this.parentPanel).actionCompleted(Action.Delete, null);
     }//GEN-LAST:event_jButtonDeleteActionPerformed
 
 
@@ -232,22 +232,18 @@ public class StudentJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldId;
     private javax.swing.JTextField jTextFieldName;
     // End of variables declaration//GEN-END:variables
-    private StudentListJPanel parentPanel=null;
 
-    public void setParentPanel(StudentListJPanel parent) {
-        this.parentPanel=parent;
-    }
+
+    
+    
+    @Override
     public void setState(PanelState state) {
-        enableAllControls(false);
-        
+        super.setState(state);        
         if (state == PanelState.Initial) {
-            clearAll();
             this.jButtonNew.setEnabled(true);
         } else if (state == PanelState.InNew) { 
-            clearAll();
             this.jButtonCancel.setEnabled(true);
             this.jButtonSave.setEnabled(true);
-            enableAllInputControls(true);
         } else if (state == PanelState.InView) {
             this.jButtonNew.setEnabled(true);
             this.jButtonUpdate.setEnabled(true);
@@ -255,45 +251,32 @@ public class StudentJPanel extends javax.swing.JPanel {
         } else if (state== PanelState.InUpdate) {
             this.jButtonSave.setEnabled(true);
             this.jButtonCancel.setEnabled(true);
-            this.enableAllInputControls(true);
             this.addressJPanel1.enableAllControls(true);
             this.contactJPanel2.enableAllControls(true);
             this.jTextFieldId.setEnabled(false);
         }
     }
     
+    @Override
     public void enableAllControls(boolean enable) {
-        for (Component comp : this.getComponents()) {
-            if (!(comp instanceof JLabel)) {
-                comp.setEnabled(enable);
-            }            
-        }
-        this.addressJPanel1.enableAllControls(false);
-        this.contactJPanel2.enableAllControls(false);
+        super.enableAllControls(enable);
+        this.addressJPanel1.enableAllControls(enable);
+        this.contactJPanel2.enableAllControls(enable);
     }
     
+    @Override
     public void clearAll() {
-        for (Component comp : this.getComponents()) {
-            if (comp instanceof JTextComponent) {
-                ((JTextComponent) comp).setText("");
-            } else if (comp instanceof JComboBox) {
-                ((JComboBox) comp).setSelectedIndex(0);
-            }
-        }
+        super.clearAll();
         this.addressJPanel1.clearAll();
         this.contactJPanel2.clearAll();
     }
     
-    private void enableAllInputControls(boolean enable) {
-        for (Component comp : this.getComponents()) {
-            if (comp instanceof JTextComponent) {
-                ((JTextComponent) comp).setEnabled(enable);
-            } else if (comp instanceof JComboBox) {
-                ((JComboBox) comp).setEnabled(enable);
-            }
-        }
-        this.addressJPanel1.enableAllInputControls(true);
-        this.contactJPanel2.enableAllInputControls(true);
+    @Override
+    public void enableAllInputControls(boolean enable) {
+        
+        super.enableAllInputControls(enable);
+        this.addressJPanel1.enableAllInputControls(enable);
+        this.contactJPanel2.enableAllInputControls(enable);
         
     }
 
@@ -312,7 +295,8 @@ public class StudentJPanel extends javax.swing.JPanel {
         return student;
     }
 
-    void setData(Student student) {
+
+    public void setData(Student student) {
         this.jTextFieldId.setText(student.getId());
         this.jTextFieldName.setText(student.getName());
         this.jTextFieldAge.setText(""+student.getAge());
