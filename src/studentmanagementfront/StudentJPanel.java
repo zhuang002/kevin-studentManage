@@ -1,11 +1,19 @@
 package studentmanagementfront;
 
+import java.awt.Component;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.text.JTextComponent;
+import studentmanagementbackend.Address;
+import studentmanagementbackend.Contact;
+import studentmanagementbackend.Gender;
+import studentmanagementbackend.Student;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author zhuan
@@ -48,14 +56,39 @@ public class StudentJPanel extends javax.swing.JPanel {
 
         jButtonNew.setText("New");
         jButtonNew.setToolTipText("");
+        jButtonNew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNewActionPerformed(evt);
+            }
+        });
 
         jButtonDelete.setText("Delete");
+        jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDeleteActionPerformed(evt);
+            }
+        });
 
         jButtonUpdate.setText("Update");
+        jButtonUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUpdateActionPerformed(evt);
+            }
+        });
 
         jButtonSave.setText("Save");
+        jButtonSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSaveActionPerformed(evt);
+            }
+        });
 
         jButtonCancel.setText("Cancel");
+        jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCancelActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("ID");
 
@@ -149,6 +182,36 @@ public class StudentJPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtonNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNewActionPerformed
+        // TODO add your handling code here:
+        clearAll();
+        setState(PanelState.InNew);
+    }//GEN-LAST:event_jButtonNewActionPerformed
+
+    private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
+        // TODO add your handling code here:
+        Student student=retrieveData();
+        student.save();
+
+        this.parentPanel.actionCompleted(Action.New,student);
+
+    }//GEN-LAST:event_jButtonSaveActionPerformed
+
+    private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
+        // TODO add your handling code here:
+        setState(PanelState.InUpdate);
+    }//GEN-LAST:event_jButtonUpdateActionPerformed
+
+    private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
+        // TODO add your handling code here:
+        this.parentPanel.actionCompleted(Action.Cancel,null);
+    }//GEN-LAST:event_jButtonCancelActionPerformed
+
+    private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
+        // TODO add your handling code here:
+        this.parentPanel.actionCompleted(Action.Delete, null);
+    }//GEN-LAST:event_jButtonDeleteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private studentmanagementfront.AddressJPanel addressJPanel1;
@@ -169,5 +232,95 @@ public class StudentJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldId;
     private javax.swing.JTextField jTextFieldName;
     // End of variables declaration//GEN-END:variables
+    private StudentListJPanel parentPanel=null;
 
+    public void setParentPanel(StudentListJPanel parent) {
+        this.parentPanel=parent;
+    }
+    public void setState(PanelState state) {
+        enableAllControls(false);
+        
+        if (state == PanelState.Initial) {
+            clearAll();
+            this.jButtonNew.setEnabled(true);
+        } else if (state == PanelState.InNew) { 
+            clearAll();
+            this.jButtonCancel.setEnabled(true);
+            this.jButtonSave.setEnabled(true);
+            enableAllInputControls(true);
+        } else if (state == PanelState.InView) {
+            this.jButtonNew.setEnabled(true);
+            this.jButtonUpdate.setEnabled(true);
+            this.jButtonDelete.setEnabled(true);
+        } else if (state== PanelState.InUpdate) {
+            this.jButtonSave.setEnabled(true);
+            this.jButtonCancel.setEnabled(true);
+            this.enableAllInputControls(true);
+            this.addressJPanel1.enableAllControls(true);
+            this.contactJPanel2.enableAllControls(true);
+            this.jTextFieldId.setEnabled(false);
+        }
+    }
+    
+    public void enableAllControls(boolean enable) {
+        for (Component comp : this.getComponents()) {
+            if (!(comp instanceof JLabel)) {
+                comp.setEnabled(enable);
+            }            
+        }
+        this.addressJPanel1.enableAllControls(false);
+        this.contactJPanel2.enableAllControls(false);
+    }
+    
+    public void clearAll() {
+        for (Component comp : this.getComponents()) {
+            if (comp instanceof JTextComponent) {
+                ((JTextComponent) comp).setText("");
+            } else if (comp instanceof JComboBox) {
+                ((JComboBox) comp).setSelectedIndex(0);
+            }
+        }
+        this.addressJPanel1.clearAll();
+        this.contactJPanel2.clearAll();
+    }
+    
+    private void enableAllInputControls(boolean enable) {
+        for (Component comp : this.getComponents()) {
+            if (comp instanceof JTextComponent) {
+                ((JTextComponent) comp).setEnabled(enable);
+            } else if (comp instanceof JComboBox) {
+                ((JComboBox) comp).setEnabled(enable);
+            }
+        }
+        this.addressJPanel1.enableAllInputControls(true);
+        this.contactJPanel2.enableAllInputControls(true);
+        
+    }
+
+    public Student retrieveData() {
+        Student student=new Student();
+        student.setId(this.jTextFieldId.getText());
+        student.setName(this.jTextFieldName.getText());
+        student.setAge(Integer.parseInt(this.jTextFieldAge.getText()));
+        if (this.jComboBoxGender.getSelectedIndex()==1)
+            student.setGender(Gender.Female);
+        else 
+            student.setGender(Gender.Male); 
+        student.setGrade(Integer.parseInt(this.jTextFieldGrade.getText()));
+        student.setAddress((Address) this.addressJPanel1.retrieveData());
+        student.setContact((Contact) this.contactJPanel2.retrieveData());
+        return student;
+    }
+
+    void setData(Student student) {
+        this.jTextFieldId.setText(student.getId());
+        this.jTextFieldName.setText(student.getName());
+        this.jTextFieldAge.setText(""+student.getAge());
+        this.jTextFieldGrade.setText(""+student.getGrade());
+        if (student.getGender()==Gender.Female)
+            this.jComboBoxGender.setSelectedIndex(1);
+        else this.jComboBoxGender.setSelectedIndex(0);
+        this.addressJPanel1.setData(student.getAddress());
+        this.contactJPanel2.setData(student.getContact());
+    }
 }

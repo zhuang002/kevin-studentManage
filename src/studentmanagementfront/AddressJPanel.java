@@ -5,6 +5,12 @@
  */
 package studentmanagementfront;
 
+import java.awt.Component;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.text.JTextComponent;
+import studentmanagementbackend.Address;
+
 /**
  *
  * @author zhuan
@@ -129,4 +135,52 @@ public class AddressJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldStreet;
     private javax.swing.JTextField jTextFieldStreetNo;
     // End of variables declaration//GEN-END:variables
+
+    public Address retrieveData() {
+        Address address=new Address();
+        address.setRoom(this.jTextFieldRoom.getText());
+        address.setStreetNumber(this.jTextFieldStreetNo.getText());
+        address.setSteet(this.jTextFieldStreet.getText());
+        address.setCity(this.jTextFieldCity.getText());
+        address.setProvince(this.jComboBoxProvince.getSelectedItem().toString());
+        address.setPostcode(this.jTextFieldPostCode.getText());
+        return address;
+    }
+
+    void setData(Address address) {
+        this.jTextFieldRoom.setText(address.getRoom());
+        this.jTextFieldStreetNo.setText(address.getStreetNumber());
+        this.jTextFieldStreet.setText(address.getSteet());
+        this.jTextFieldCity.setText(address.getCity());
+        this.jTextFieldPostCode.setText(address.getPostcode());
+        this.jComboBoxProvince.setSelectedItem(address.getProvince());
+    }
+
+    void enableAllControls(boolean enable) {
+        for (Component comp : this.getComponents()) {
+            if (!(comp instanceof JLabel)) {
+                comp.setEnabled(enable);
+            }            
+        }
+    }
+
+    void enableAllInputControls(boolean enable) {
+        for (Component comp: this.getComponents()) {
+            if (comp instanceof JTextComponent) {
+                ((JTextComponent) comp).setEnabled(enable);
+            } else if (comp instanceof JComboBox) {
+                ((JComboBox) comp).setEnabled(enable);
+            }
+        }
+    }
+
+    void clearAll() {
+        for (Component comp : this.getComponents()) {
+            if (comp instanceof JTextComponent) {
+                ((JTextComponent) comp).setText("");
+            } else if (comp instanceof JComboBox) {
+                ((JComboBox) comp).setSelectedIndex(0);
+            }
+        }
+    }
 }

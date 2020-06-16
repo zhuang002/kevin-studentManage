@@ -5,7 +5,10 @@
  */
 package studentmanagementfront;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.DefaultListModel;
 import studentmanagementbackend.*;
 
@@ -18,10 +21,18 @@ public class StudentListJPanel extends javax.swing.JPanel {
     /**
      * Creates new form StudentListJPanel
      */
-    public StudentListJPanel() {
+    public StudentListJPanel()  {
         initComponents();
-        loadStudents();
-        setInitialState();
+        
+        try {
+            this.studentJPanel1.setParentPanel(this);
+            loadStudents();
+            setInitialState();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+        
     }
 
     /**
@@ -40,6 +51,11 @@ public class StudentListJPanel extends javax.swing.JPanel {
 
         jSplitPane1.setRightComponent(studentJPanel1);
 
+        jListStudents.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jListStudentsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jListStudents);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
@@ -48,13 +64,21 @@ public class StudentListJPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 633, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSplitPane1)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jListStudentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListStudentsMouseClicked
+        // TODO add your handling code here:
+        onStudentSelected();
+        
+    }//GEN-LAST:event_jListStudentsMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -65,14 +89,50 @@ public class StudentListJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private ArrayList<Student> students=new ArrayList();
-    private void loadStudents() {
+    private void loadStudents()  {
         this.students=Database.getAllStudents();
+        Collections.sort(students);
         DefaultListModel listModel=new DefaultListModel();
         listModel.addAll(this.students);
         this.jListStudents.setModel(listModel);
     }
 
     private void setInitialState() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.studentJPanel1.setState(PanelState.Initial);
     }
+
+    public void actionCompleted(Action action, Student student)  {
+        if (action==Action.New || action==Action.Update) {
+            loadStudents();
+            int idx=((DefaultListModel)this.jListStudents.getModel()).indexOf(student);
+            //int idx=Collections.binarySearch(students, student, (x,y)->x.getId().compareTo(y.getId()));
+            this.jListStudents.setSelectedIndex(idx);
+            onStudentSelected();
+        } else if (action==Action.Cancel) {
+            int idx=this.jListStudents.getSelectedIndex();
+            if (idx>=0)
+                onStudentSelected();
+            else {
+                this.studentJPanel1.setState(PanelState.Initial);
+            }
+        } else if (action==Action.Delete) {
+            int idx=this.jListStudents.getSelectedIndex();
+            if (idx>=0) {
+                Student stud=(Student)((DefaultListModel)this.jListStudents.getModel()).get(idx);
+                stud.delete();
+                loadStudents();
+                this.studentJPanel1.clearAll();
+                this.studentJPanel1.setState(PanelState.Initial);
+            }
+        }
+    }
+
+    private void onStudentSelected() {
+        int idx=this.jListStudents.getSelectedIndex();
+        Student student=(Student)((DefaultListModel)this.jListStudents.getModel()).get(idx);
+        this.studentJPanel1.setState(PanelState.InView);
+        this.studentJPanel1.setData(student);
+    }
+
+    
 }

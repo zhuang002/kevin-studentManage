@@ -7,6 +7,7 @@ package studentmanagementfront;
 
 import java.awt.CardLayout;
 import java.awt.Container;
+import studentmanagementbackend.Database;
 
 /**
  *
@@ -43,9 +44,12 @@ public class MainJFrame extends javax.swing.JFrame {
         jMenuReport = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         getContentPane().setLayout(new java.awt.CardLayout());
-
-        studentListJPanel1.setName("Student"); // NOI18N
         getContentPane().add(studentListJPanel1, "Student");
 
         couseListJPanel1.setName("Course"); // NOI18N
@@ -116,6 +120,16 @@ public class MainJFrame extends javax.swing.JFrame {
         ((CardLayout)contentPane.getLayout()).show(contentPane, "Exam");
     }//GEN-LAST:event_jMenuItemManageExamsActionPerformed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        try {
+            Database.saveAll();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_formWindowClosing
+
     /**
      * @param args the command line arguments
      */
@@ -164,4 +178,5 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuStudent;
     private studentmanagementfront.StudentListJPanel studentListJPanel1;
     // End of variables declaration//GEN-END:variables
+
 }
