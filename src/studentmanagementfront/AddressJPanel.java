@@ -5,10 +5,6 @@
  */
 package studentmanagementfront;
 
-import java.awt.Component;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.text.JTextComponent;
 import studentmanagementbackend.Address;
 
 /**

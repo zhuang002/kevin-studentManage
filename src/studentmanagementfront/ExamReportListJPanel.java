@@ -24,14 +24,10 @@ public class ExamReportListJPanel extends ContentJPanel {
      */
     public ExamReportListJPanel() {
         initComponents();
-        ArrayList<Exam> exams=Database.getAllExams();
-        DefaultListModel modelExams=new DefaultListModel();
-        modelExams.addAll(exams);
-        this.jListExam.setModel(modelExams);
-        ArrayList<Student> students=Database.getAllStudents();
-        DefaultListModel modelStudents=new DefaultListModel();
-        modelStudents.addAll(students);
-        this.jListStudents.setModel(modelStudents);
+        loadExams();
+        loadStudents();
+        
+        this.examReportJPanel1.setParentPanel(this);
         this.examReportJPanel1.setState(PanelState.Initial);
     }
 
@@ -51,6 +47,10 @@ public class ExamReportListJPanel extends ContentJPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         jListStudents = new javax.swing.JList<>();
         examReportJPanel1 = new studentmanagementfront.ExamReportJPanel();
+
+        jSplitPane1.setDividerLocation(300);
+
+        jSplitPane2.setDividerLocation(150);
 
         jListExam.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -89,13 +89,13 @@ public class ExamReportListJPanel extends ContentJPanel {
 
     private void jListExamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListExamMouseClicked
         // TODO add your handling code here:
-        onSelect();
+        onSelected();
     }//GEN-LAST:event_jListExamMouseClicked
 
     private void jListStudentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jListStudentsMouseClicked
 
         // TODO add your handling code here:
-        onSelect();
+        onSelected();
     }//GEN-LAST:event_jListStudentsMouseClicked
 
 
@@ -111,10 +111,11 @@ public class ExamReportListJPanel extends ContentJPanel {
 
     
 
-    private void onSelect() {
+    private void onSelected() {
         int idxExam=this.jListExam.getSelectedIndex();
         if (idxExam<0) {
             this.examReportJPanel1.setState(PanelState.Initial);
+            this.examReportJPanel1.clearAll();
             return;
         }
         int idxStudent=this.jListStudents.getSelectedIndex();
@@ -124,9 +125,9 @@ public class ExamReportListJPanel extends ContentJPanel {
             return;
         }
         Exam exam=(Exam)((DefaultListModel)this.jListExam.getModel()).get(idxExam);
-        Student student=(Student)((DefaultListModel)this.jListExam.getModel()).get(idxStudent);
+        Student student=(Student)((DefaultListModel)this.jListStudents.getModel()).get(idxStudent);
         String examReportId=student.getId()+"@"+exam.getId();
-        ExamReport report=Database.findExamReport(examReportId);
+        ExamReport report=Database.getExamReport(examReportId);
         if (report==null) {
             report=new ExamReport();
             report.setId(null);
@@ -134,8 +135,36 @@ public class ExamReportListJPanel extends ContentJPanel {
             report.setStudent(student);
             report.setScore(0);
             report.setDate(new Date());
+            this.examReportJPanel1.setState(PanelState.InNew);
+            this.examReportJPanel1.setData(report);
+        } else {
+            this.examReportJPanel1.setState(PanelState.InUpdate);
+            this.examReportJPanel1.setData(report);
         }
-        this.examReportJPanel1.setData(report);
-        this.examReportJPanel1.setState(PanelState.InUpdate);
+    }
+
+    public void loadExams() {
+        //this.examReportJPanel1.setState(PanelState.Initial);
+        ArrayList<Exam> exams=Database.getAllExams();
+        DefaultListModel modelExams=new DefaultListModel();
+        modelExams.addAll(exams);
+        this.jListExam.setModel(modelExams);    }
+
+    public void loadStudents() {
+        ArrayList<Student> students=Database.getAllStudents();
+        DefaultListModel modelStudents=new DefaultListModel();
+        modelStudents.addAll(students);
+        this.jListStudents.setModel(modelStudents);
+    }
+    
+    @Override
+    public void setState(PanelState state) {
+        if (state==PanelState.Initial) {
+            this.examReportJPanel1.setState(state);
+        }
+    }
+    
+    public void actionCompleted(Action action, ExamReport examReport){
+        onSelected();
     }
 }

@@ -12,7 +12,7 @@ import studentmanagementbackend.*;
 
 /**
  *
- * @author zhuan
+ * @author Kevin
  */
 public class StudentListJPanel extends ContentJPanel {
 
@@ -47,6 +47,7 @@ public class StudentListJPanel extends ContentJPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jListStudents = new javax.swing.JList<>();
 
+        jSplitPane1.setDividerLocation(200);
         jSplitPane1.setRightComponent(studentJPanel1);
 
         jListStudents.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -86,20 +87,31 @@ public class StudentListJPanel extends ContentJPanel {
     private studentmanagementfront.StudentJPanel studentJPanel1;
     // End of variables declaration//GEN-END:variables
 
-    private ArrayList<Student> students=new ArrayList();
+    /**
+     * Load all students from database to jList.
+     */
     private void loadStudents()  {
-        this.students=Database.getAllStudents();
+        ArrayList<Student> students=Database.getAllStudents();
         Collections.sort(students);
         DefaultListModel listModel=new DefaultListModel();
-        listModel.addAll(this.students);
+        listModel.addAll(students);
         this.jListStudents.setModel(listModel);
     }
 
+    /**
+     *Override the setState() method to pass the state to child panel.
+     * @param state the state to set. 
+     */
     @Override
     public void setState(PanelState state) {
         this.studentJPanel1.setState(state);
     }
 
+    /**
+     *The handler to so something after the child panel has performed an action.
+     * @param action The action that the child panel has just completed.
+     * @param student the student parameter that has retrived from the child panel inputs.
+     */
     public void actionCompleted(Action action, Student student)  {
         if (null != action) switch (action) {
             case New:
@@ -134,6 +146,9 @@ public class StudentListJPanel extends ContentJPanel {
         }
     }
 
+    /**
+     * The method to be called when a student is selected.
+     */
     private void onStudentSelected() {
         int idx=this.jListStudents.getSelectedIndex();
         Student student=(Student)((DefaultListModel)this.jListStudents.getModel()).get(idx);

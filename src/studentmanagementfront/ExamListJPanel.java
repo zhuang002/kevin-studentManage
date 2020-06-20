@@ -41,6 +41,8 @@ public class ExamListJPanel extends ContentJPanel {
         jListExam = new javax.swing.JList<>();
         examJPanel1 = new studentmanagementfront.ExamJPanel();
 
+        jSplitPane1.setDividerLocation(200);
+
         jListExam.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jListExamMouseClicked(evt);
@@ -55,11 +57,13 @@ public class ExamListJPanel extends ContentJPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 708, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -84,21 +88,29 @@ public class ExamListJPanel extends ContentJPanel {
     }
 
     void actionCompleted(Action action, Exam exam) {
-        if (action==Action.Save) {
-            this.loadExams();
-            int idx=((DefaultListModel)this.jListExam.getModel()).indexOf(exam);
-            this.jListExam.setSelectedIndex(idx);
-            this.onSelected();
-        } else if (action==Action.Cancel) {
-            onSelected();
-        } else if (action==Action.Delete) {
-            int idx=this.jListExam.getSelectedIndex();
-            if (idx<0) return;
-            DefaultListModel model=(DefaultListModel)this.jListExam.getModel();
-            Exam ex=(Exam)model.get(idx);
-            ex.delete();
-            loadExams();
-            this.examJPanel1.setState(PanelState.Initial);
+        if (null!=action) switch (action) {
+            case Save:{
+                this.loadExams();
+                int idx=((DefaultListModel)this.jListExam.getModel()).indexOf(exam);
+                this.jListExam.setSelectedIndex(idx);
+                this.onSelected();
+                    break;
+                }
+            case Cancel:
+                onSelected();
+                break;
+            case Delete:{
+                int idx=this.jListExam.getSelectedIndex();
+                if (idx<0) return;
+                DefaultListModel model=(DefaultListModel)this.jListExam.getModel();
+                Exam ex=(Exam)model.get(idx);
+                ex.delete();
+                loadExams();
+                this.examJPanel1.setState(PanelState.Initial);
+                    break;
+                }
+            default:
+                break;
         } 
     }
 

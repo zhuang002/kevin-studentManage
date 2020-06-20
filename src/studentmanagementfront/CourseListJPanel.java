@@ -41,6 +41,8 @@ public class CourseListJPanel extends ContentJPanel {
         jListCourse = new javax.swing.JList<>();
         courseJPanel1 = new studentmanagementfront.CourseJPanel();
 
+        jSplitPane1.setDividerLocation(200);
+
         jListCourse.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jListCourseMouseClicked(evt);
@@ -55,7 +57,7 @@ public class CourseListJPanel extends ContentJPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

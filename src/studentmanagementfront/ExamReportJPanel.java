@@ -42,7 +42,7 @@ public class ExamReportJPanel extends ContentJPanel {
         jLabel5 = new javax.swing.JLabel();
         jLabelDate = new javax.swing.JLabel();
         jButtonSave = new javax.swing.JButton();
-        jButtonClear = new javax.swing.JButton();
+        jButtonCancel = new javax.swing.JButton();
 
         jLabel1.setText("Status:");
 
@@ -72,9 +72,19 @@ public class ExamReportJPanel extends ContentJPanel {
 
         jButtonSave.setText("Save");
         jButtonSave.setToolTipText("");
+        jButtonSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSaveActionPerformed(evt);
+            }
+        });
 
-        jButtonClear.setText("Clear");
-        jButtonClear.setToolTipText("");
+        jButtonCancel.setText("Cancel");
+        jButtonCancel.setToolTipText("");
+        jButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCancelActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -91,13 +101,13 @@ public class ExamReportJPanel extends ContentJPanel {
                     .addComponent(jButtonSave))
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonClear)
+                    .addComponent(jButtonCancel)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jLabelExamId, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
                         .addComponent(jLabelStudentId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabelStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jTextFieldScore, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldScore, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -126,7 +136,7 @@ public class ExamReportJPanel extends ContentJPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSave)
-                    .addComponent(jButtonClear))
+                    .addComponent(jButtonCancel))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -135,9 +145,21 @@ public class ExamReportJPanel extends ContentJPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldScoreActionPerformed
 
+    private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
+        // TODO add your handling code here:
+        ExamReport examReport=this.retrieveData();
+        examReport.save();
+        ((ExamReportListJPanel)this.parentPanel).actionCompleted(Action.Save,examReport);
+    }//GEN-LAST:event_jButtonSaveActionPerformed
+
+    private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
+        // TODO add your handling code here:
+        ((ExamReportListJPanel)this.parentPanel).actionCompleted(Action.Cancel,null);
+    }//GEN-LAST:event_jButtonCancelActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonClear;
+    private javax.swing.JButton jButtonCancel;
     private javax.swing.JButton jButtonSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -172,5 +194,25 @@ public class ExamReportJPanel extends ContentJPanel {
         this.jLabelStatus.setText("NA");
         this.jLabelStudentId.setText("NA");
         this.jTextFieldScore.setText("0");
+    }
+    
+    @Override
+    public void setState(PanelState state) {
+        super.setState(state);
+        if (state==PanelState.InNew || state==PanelState.InUpdate) {
+            this.jButtonSave.setEnabled(true);
+            this.jButtonCancel.setEnabled(true);
+        }
+    }
+
+    private ExamReport retrieveData() {
+        ExamReport ret=new ExamReport();
+
+        ret.setExamId(this.jLabelExamId.getText());
+        ret.setStudentId(this.jLabelStudentId.getText());
+        ret.setId(ret.getStudentId()+"@"+ret.getExamId());
+        ret.setDate(new Date());
+        ret.setScore(Integer.parseInt(this.jTextFieldScore.getText()));
+        return ret;
     }
 }

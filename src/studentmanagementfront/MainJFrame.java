@@ -35,6 +35,7 @@ public class MainJFrame extends javax.swing.JFrame {
         couseListJPanel1 = new studentmanagementfront.CourseListJPanel();
         examListJPanel1 = new studentmanagementfront.ExamListJPanel();
         examReportListJPanel1 = new studentmanagementfront.ExamReportListJPanel();
+        reportListJPanel1 = new studentmanagementfront.ReportListJPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuStudent = new javax.swing.JMenu();
         jMenuItemManageStudents = new javax.swing.JMenuItem();
@@ -61,6 +62,7 @@ public class MainJFrame extends javax.swing.JFrame {
         examListJPanel1.setName("Exam"); // NOI18N
         getContentPane().add(examListJPanel1, "Exam");
         getContentPane().add(examReportListJPanel1, "ExamReport");
+        getContentPane().add(reportListJPanel1, "Report");
 
         jMenuStudent.setText("Student");
 
@@ -108,7 +110,12 @@ public class MainJFrame extends javax.swing.JFrame {
         });
         jMenuReport.add(jMenuItemMarking);
 
-        jMenuItemReport.setText("StudentReport");
+        jMenuItemReport.setText("Student Report");
+        jMenuItemReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemReportActionPerformed(evt);
+            }
+        });
         jMenuReport.add(jMenuItemReport);
 
         jMenuBar1.add(jMenuReport);
@@ -150,7 +157,18 @@ public class MainJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         Container contentPane=this.getContentPane();
         ((CardLayout)contentPane.getLayout()).show(contentPane, "ExamReport");
+        this.examReportListJPanel1.loadExams();
+        this.examReportListJPanel1.loadStudents();
+        this.examReportListJPanel1.setState(PanelState.Initial);
     }//GEN-LAST:event_jMenuItemMarkingActionPerformed
+
+    private void jMenuItemReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemReportActionPerformed
+        // TODO add your handling code here:
+        Container contentPane=this.getContentPane();
+        ((CardLayout)contentPane.getLayout()).show(contentPane, "Report");
+        this.reportListJPanel1.loadStudents();
+        this.reportListJPanel1.setState(PanelState.Initial);
+    }//GEN-LAST:event_jMenuItemReportActionPerformed
 
     /**
      * @param args the command line arguments
@@ -201,6 +219,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemReport;
     private javax.swing.JMenu jMenuReport;
     private javax.swing.JMenu jMenuStudent;
+    private studentmanagementfront.ReportListJPanel reportListJPanel1;
     private studentmanagementfront.StudentListJPanel studentListJPanel1;
     // End of variables declaration//GEN-END:variables
 

@@ -1,9 +1,6 @@
 package studentmanagementfront;
 
-import java.awt.Component;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.text.JTextComponent;
+
 import studentmanagementbackend.Address;
 import studentmanagementbackend.Contact;
 import studentmanagementbackend.Gender;
@@ -16,7 +13,7 @@ import studentmanagementbackend.Student;
  */
 /**
  *
- * @author zhuan
+ * @author Kevin
  */
 public class StudentJPanel extends ContentJPanel {
 
@@ -96,11 +93,18 @@ public class StudentJPanel extends ContentJPanel {
 
         jLabel3.setText("Age");
 
+        jTextFieldAge.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldAge.setText("6");
+        jTextFieldAge.setToolTipText("");
+
         jLabel4.setText("Gender");
 
         jComboBoxGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
 
         jLabel5.setText("Grade");
+
+        jTextFieldGrade.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        jTextFieldGrade.setText("1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -204,12 +208,12 @@ public class StudentJPanel extends ContentJPanel {
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
         // TODO add your handling code here:
-        ((StudentListJPanel)this.parentPanel).actionCompleted(Action.Cancel,null);
+        ((StudentListJPanel)this.parentPanel).actionCompleted(Action.Cancel,(Student)null);
     }//GEN-LAST:event_jButtonCancelActionPerformed
 
     private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
         // TODO add your handling code here:
-        ((StudentListJPanel)this.parentPanel).actionCompleted(Action.Delete, null);
+        ((StudentListJPanel)this.parentPanel).actionCompleted(Action.Delete, (Student)null);
     }//GEN-LAST:event_jButtonDeleteActionPerformed
 
 
@@ -233,30 +237,42 @@ public class StudentJPanel extends ContentJPanel {
     private javax.swing.JTextField jTextFieldName;
     // End of variables declaration//GEN-END:variables
 
-
-    
-    
+    /**
+     *Set state of the panel.
+     * @param state The state to be set.
+     */
     @Override
     public void setState(PanelState state) {
         super.setState(state);        
-        if (state == PanelState.Initial) {
-            this.jButtonNew.setEnabled(true);
-        } else if (state == PanelState.InNew) { 
-            this.jButtonCancel.setEnabled(true);
-            this.jButtonSave.setEnabled(true);
-        } else if (state == PanelState.InView) {
-            this.jButtonNew.setEnabled(true);
-            this.jButtonUpdate.setEnabled(true);
-            this.jButtonDelete.setEnabled(true);
-        } else if (state== PanelState.InUpdate) {
-            this.jButtonSave.setEnabled(true);
-            this.jButtonCancel.setEnabled(true);
-            this.addressJPanel1.enableAllControls(true);
-            this.contactJPanel2.enableAllControls(true);
-            this.jTextFieldId.setEnabled(false);
+        if (null != state) switch (state) {
+            case Initial:
+                this.jButtonNew.setEnabled(true);
+                break;
+            case InNew:
+                this.jButtonCancel.setEnabled(true);
+                this.jButtonSave.setEnabled(true);
+                break;
+            case InView:
+                this.jButtonNew.setEnabled(true);
+                this.jButtonUpdate.setEnabled(true);
+                this.jButtonDelete.setEnabled(true);
+                break;
+            case InUpdate:
+                this.jButtonSave.setEnabled(true);
+                this.jButtonCancel.setEnabled(true);
+                this.addressJPanel1.enableAllControls(true);
+                this.contactJPanel2.enableAllControls(true);
+                this.jTextFieldId.setEnabled(false);
+                break;
+            default:
+                break;
         }
     }
     
+    /**
+     *Enable or disable all sub controls
+     * @param enable When true enable the controls. When false disable all the controls.
+     */
     @Override
     public void enableAllControls(boolean enable) {
         super.enableAllControls(enable);
@@ -264,13 +280,22 @@ public class StudentJPanel extends ContentJPanel {
         this.contactJPanel2.enableAllControls(enable);
     }
     
+    /**
+     *Clear all the input controls.
+     */
     @Override
     public void clearAll() {
         super.clearAll();
         this.addressJPanel1.clearAll();
         this.contactJPanel2.clearAll();
+        this.jTextFieldGrade.setText("1");
+        this.jTextFieldAge.setText("6");
     }
     
+    /**
+     *Enable all input sub controls.
+     * @param enable When true, enable all the input controls. Otherwise disable all the input controls.
+     */
     @Override
     public void enableAllInputControls(boolean enable) {
         
@@ -280,6 +305,10 @@ public class StudentJPanel extends ContentJPanel {
         
     }
 
+    /**
+     *Retrieve a student from the panel.
+     * @return the student object that is retrieved.
+     */
     public Student retrieveData() {
         Student student=new Student();
         student.setId(this.jTextFieldId.getText());
@@ -295,7 +324,10 @@ public class StudentJPanel extends ContentJPanel {
         return student;
     }
 
-
+    /**
+     *set a student data to the panel.
+     * @param student the student object to be set into the panel.
+     */
     public void setData(Student student) {
         this.jTextFieldId.setText(student.getId());
         this.jTextFieldName.setText(student.getName());

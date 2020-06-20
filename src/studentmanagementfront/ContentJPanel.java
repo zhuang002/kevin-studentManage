@@ -9,7 +9,6 @@ import java.awt.Component;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
-import studentmanagementbackend.Exam;
 
 /**
  *
@@ -88,7 +87,10 @@ abstract public class ContentJPanel extends javax.swing.JPanel {
             if (comp instanceof JTextComponent) {
                 ((JTextComponent) comp).setText("");
             } else if (comp instanceof JComboBox) {
-                ((JComboBox) comp).setSelectedIndex(-1);
+                if (((JComboBox)comp).getModel().getSize()>0)
+                    ((JComboBox) comp).setSelectedIndex(0);
+                else 
+                    ((JComboBox) comp).setSelectedIndex(-1);
             }
         }
     }
@@ -96,6 +98,4 @@ abstract public class ContentJPanel extends javax.swing.JPanel {
     public  void setParentPanel(ContentJPanel parent) {
         this.parentPanel=parent;
     }
-
-    
 }

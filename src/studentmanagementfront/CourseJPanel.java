@@ -182,12 +182,12 @@ public class CourseJPanel extends ContentJPanel {
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
         // TODO add your handling code here:
-        ((CourseListJPanel)this.parentPanel).actionCompleted(Action.Cancel,null);
+        ((CourseListJPanel)this.parentPanel).actionCompleted(Action.Cancel,(Course)null);
     }//GEN-LAST:event_jButtonCancelActionPerformed
 
     private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
         // TODO add your handling code here:
-        ((CourseListJPanel)this.parentPanel).actionCompleted(Action.Delete,null);
+        ((CourseListJPanel)this.parentPanel).actionCompleted(Action.Delete,(Course)null);
     }//GEN-LAST:event_jButtonDeleteActionPerformed
 
 
