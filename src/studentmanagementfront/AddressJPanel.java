@@ -147,7 +147,7 @@ public class AddressJPanel extends ContentJPanel {
     public void setData(Address address) {
         this.jTextFieldRoom.setText(address.getRoom());
         this.jTextFieldStreetNo.setText(address.getStreetNumber());
-        this.jTextFieldStreet.setText(address.getSteet());
+        this.jTextFieldStreet.setText(address.getStreet());
         this.jTextFieldCity.setText(address.getCity());
         this.jTextFieldPostCode.setText(address.getPostcode());
         this.jComboBoxProvince.setSelectedItem(address.getProvince());
