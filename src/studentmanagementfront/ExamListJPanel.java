@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import studentmanagementbackend.Database;
 import studentmanagementbackend.Exam;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,7 +26,7 @@ public class ExamListJPanel extends ContentJPanel {
         this.examJPanel1.setState(PanelState.Initial);
         this.examJPanel1.setParentPanel(this);
         loadExams();
-        
+
     }
 
     /**
@@ -81,47 +83,59 @@ public class ExamListJPanel extends ContentJPanel {
     // End of variables declaration//GEN-END:variables
 
     private void loadExams() {
-        ArrayList<Exam> exams=Database.getAllExams();
-        DefaultListModel model=new DefaultListModel();
-        model.addAll(exams);
-        this.jListExam.setModel(model);
+        try {
+            ArrayList<Exam> exams = new Database().getAllExams();
+            DefaultListModel model = new DefaultListModel();
+            model.addAll(exams);
+            this.jListExam.setModel(model);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
+        }
     }
 
     void actionCompleted(Action action, Exam exam) {
-        if (null!=action) switch (action) {
-            case Save:{
-                this.loadExams();
-                int idx=((DefaultListModel)this.jListExam.getModel()).indexOf(exam);
-                this.jListExam.setSelectedIndex(idx);
-                this.onSelected();
-                    break;
+        try {
+            if (null != action) {
+                switch (action) {
+                    case Save: {
+                        this.loadExams();
+                        int idx = ((DefaultListModel) this.jListExam.getModel()).indexOf(exam);
+                        this.jListExam.setSelectedIndex(idx);
+                        this.onSelected();
+                        break;
+                    }
+                    case Cancel:
+                        onSelected();
+                        break;
+                    case Delete: {
+                        int idx = this.jListExam.getSelectedIndex();
+                        if (idx < 0) {
+                            return;
+                        }
+                        DefaultListModel model = (DefaultListModel) this.jListExam.getModel();
+                        Exam ex = (Exam) model.get(idx);
+                        ex.delete();
+                        loadExams();
+                        this.examJPanel1.setState(PanelState.Initial);
+                        break;
+                    }
+                    default:
+                        break;
                 }
-            case Cancel:
-                onSelected();
-                break;
-            case Delete:{
-                int idx=this.jListExam.getSelectedIndex();
-                if (idx<0) return;
-                DefaultListModel model=(DefaultListModel)this.jListExam.getModel();
-                Exam ex=(Exam)model.get(idx);
-                ex.delete();
-                loadExams();
-                this.examJPanel1.setState(PanelState.Initial);
-                    break;
-                }
-            default:
-                break;
-        } 
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
+        }
     }
 
     private void onSelected() {
-        int idx=this.jListExam.getSelectedIndex();
-        if (idx<0) {
+        int idx = this.jListExam.getSelectedIndex();
+        if (idx < 0) {
             this.examJPanel1.setState(PanelState.Initial);
             this.examJPanel1.clearAll();
             return;
         }
-        Exam exam=(Exam)((DefaultListModel)this.jListExam.getModel()).get(idx);
+        Exam exam = (Exam) ((DefaultListModel) this.jListExam.getModel()).get(idx);
         this.examJPanel1.setData(exam);
         this.examJPanel1.setState(PanelState.InView);
     }

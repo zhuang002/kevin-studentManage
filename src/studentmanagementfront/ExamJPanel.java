@@ -10,6 +10,8 @@ import javax.swing.DefaultComboBoxModel;
 import studentmanagementbackend.Course;
 import studentmanagementbackend.Database;
 import studentmanagementbackend.Exam;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -181,19 +183,23 @@ public class ExamJPanel extends ContentJPanel {
 
     private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
         // TODO add your handling code here:
-        Exam exam=retrieveData();
-        exam.save();
-        ((ExamListJPanel)this.parentPanel).actionCompleted(Action.Save,exam);
+        try {
+            Exam exam = retrieveData();
+            exam.save();
+            ((ExamListJPanel) this.parentPanel).actionCompleted(Action.Save, exam);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
+        }
     }//GEN-LAST:event_jButtonSaveActionPerformed
 
     private void jButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelActionPerformed
         // TODO add your handling code here:
-        ((ExamListJPanel)this.parentPanel).actionCompleted(Action.Cancel,(Exam)null);
+        ((ExamListJPanel) this.parentPanel).actionCompleted(Action.Cancel, (Exam) null);
     }//GEN-LAST:event_jButtonCancelActionPerformed
 
     private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
         // TODO add your handling code here:
-        ((ExamListJPanel)this.parentPanel).actionCompleted(Action.Delete,(Exam)null);
+        ((ExamListJPanel) this.parentPanel).actionCompleted(Action.Delete, (Exam) null);
     }//GEN-LAST:event_jButtonDeleteActionPerformed
 
     private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
@@ -221,51 +227,58 @@ public class ExamJPanel extends ContentJPanel {
     // End of variables declaration//GEN-END:variables
 
     private void loadCourses() {
-        ArrayList<Course> courses=Database.getAllCourses();
-        DefaultComboBoxModel model=new DefaultComboBoxModel();
-        model.addAll(courses);
-        this.jComboBoxCourse.setModel(model);
-        if (courses.size()>0)
-            this.jComboBoxCourse.setSelectedIndex(0);
+        try {
+            ArrayList<Course> courses = new Database().getAllCourses();
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            model.addAll(courses);
+            this.jComboBoxCourse.setModel(model);
+            if (courses.size() > 0) {
+                this.jComboBoxCourse.setSelectedIndex(0);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
+        }
     }
-    
+
     @Override
     public void setState(PanelState state) {
         super.setState(state);
-        if (null!=state) switch (state) {
-            case Initial:
-                this.jButtonNew.setEnabled(true);
-                this.jTextAreaDescription.setEnabled(false);
-                break;
-            case InNew:
-                this.jButtonSave.setEnabled(true);
-                this.jButtonCancel.setEnabled(true);
-                this.jTextAreaDescription.setEnabled(true);
-                loadCourses();
-                break;
-            case InUpdate:
-                this.jTextFieldId.setEnabled(false);
-                this.jButtonSave.setEnabled(true);
-                this.jButtonCancel.setEnabled(true);
-                this.jTextAreaDescription.setEnabled(true);
-                loadCourses();
-                break;
-            case InView:
-                this.jButtonNew.setEnabled(true);
-                this.jButtonUpdate.setEnabled(true);
-                this.jButtonDelete.setEnabled(true);
-                this.jTextAreaDescription.setEnabled(false);
-                loadCourses();
-                break;
-            default:
-                break;
+        if (null != state) {
+            switch (state) {
+                case Initial:
+                    this.jButtonNew.setEnabled(true);
+                    this.jTextAreaDescription.setEnabled(false);
+                    break;
+                case InNew:
+                    this.jButtonSave.setEnabled(true);
+                    this.jButtonCancel.setEnabled(true);
+                    this.jTextAreaDescription.setEnabled(true);
+                    loadCourses();
+                    break;
+                case InUpdate:
+                    this.jTextFieldId.setEnabled(false);
+                    this.jButtonSave.setEnabled(true);
+                    this.jButtonCancel.setEnabled(true);
+                    this.jTextAreaDescription.setEnabled(true);
+                    loadCourses();
+                    break;
+                case InView:
+                    this.jButtonNew.setEnabled(true);
+                    this.jButtonUpdate.setEnabled(true);
+                    this.jButtonDelete.setEnabled(true);
+                    this.jTextAreaDescription.setEnabled(false);
+                    loadCourses();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
     private Exam retrieveData() {
-        Exam exam=new Exam();
+        Exam exam = new Exam();
         exam.setId(this.jTextFieldId.getText());
-        Course course=(Course)((DefaultComboBoxModel)this.jComboBoxCourse.getModel()).getElementAt(this.jComboBoxCourse.getSelectedIndex());
+        Course course = (Course) ((DefaultComboBoxModel) this.jComboBoxCourse.getModel()).getElementAt(this.jComboBoxCourse.getSelectedIndex());
         exam.setCourse(course);
         exam.setDescription(this.jTextAreaDescription.getText());
         exam.setPercentage(Integer.parseInt(this.jTextFieldPercentage.getText()));
@@ -275,14 +288,13 @@ public class ExamJPanel extends ContentJPanel {
     void setData(Exam exam) {
         this.jTextFieldId.setText(exam.getId());
         this.jTextAreaDescription.setText(exam.getDescription());
-        this.jTextFieldPercentage.setText(""+exam.getPercentage());
-        DefaultComboBoxModel model=(DefaultComboBoxModel)this.jComboBoxCourse.getModel();
-        int idx=model.getIndexOf(exam);
+        this.jTextFieldPercentage.setText("" + exam.getPercentage());
+        DefaultComboBoxModel model = (DefaultComboBoxModel) this.jComboBoxCourse.getModel();
+        int idx = model.getIndexOf(exam);
         this.jComboBoxCourse.setEnabled(true);
         this.jComboBoxCourse.setSelectedIndex(idx);
 
     }
-    
 
     @Override
     public void clearAll() {

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import studentmanagementbackend.Course;
 import studentmanagementbackend.Database;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -91,18 +93,26 @@ public class CourseListJPanel extends ContentJPanel {
                 onSelected();
             }
         } else if (action==Action.Delete) {
-            course=(Course)((DefaultListModel)this.jListCourse.getModel()).get(this.jListCourse.getSelectedIndex());
-            course.delete();
-            loadCourses();
-            this.courseJPanel1.setState(PanelState.Initial);
+            try {
+                course=(Course)((DefaultListModel)this.jListCourse.getModel()).get(this.jListCourse.getSelectedIndex());
+                course.delete();
+                loadCourses();
+                this.courseJPanel1.setState(PanelState.Initial);
+            } catch (SQLException e) {
+                popError("Database Error: "+e.getMessage());
+            }
         }
     }
 
     private void loadCourses() {
-        ArrayList<Course> courses=Database.getAllCourses();
-        DefaultListModel model=new DefaultListModel();
-        model.addAll(courses);
-        this.jListCourse.setModel(model);
+        try {
+            ArrayList<Course> courses=new Database().getAllCourses();
+            DefaultListModel model=new DefaultListModel();
+            model.addAll(courses);
+            this.jListCourse.setModel(model);   
+        } catch (SQLException e) {
+                popError("Database Error: "+e.getMessage());
+        }
     }
 
     private void onSelected() {
@@ -110,5 +120,9 @@ public class CourseListJPanel extends ContentJPanel {
         Course course=(Course)((DefaultListModel)this.jListCourse.getModel()).get(idx);
         this.courseJPanel1.setData(course);
         this.courseJPanel1.setState(PanelState.InView);
+    }
+    
+    private void popError(String message) {
+        JOptionPane.showMessageDialog(this, message);
     }
 }
